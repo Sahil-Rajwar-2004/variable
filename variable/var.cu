@@ -32,7 +32,7 @@ extern "C"{
     }
 
     __global__ void fdivKernel(const double *x,const double *y,double *z){
-        *z = floor(*x / *y);
+        *z = __float2int_rd((float)(*x) / (float)(*y));
     }
 
     __global__ void powKernel(const double *x,const double *y,double *z){
@@ -130,9 +130,7 @@ extern "C"{
                 cudaCheckError(cudaMemcpy(value,&data,sizeof(double),cudaMemcpyHostToDevice),"failed to copy data from host to dedvice");               // copy memory from CPU to GPU
             }
 
-            ~Var(){
-                cudaCheckError(cudaFree(value),"failed to free device memory");                                                                         // delete that memory from the GPU
-            }
+            ~Var(){ cudaCheckError(cudaFree(value),"failed to free device memory"); }                                                                   // delete that memory from the GPU
 
             double get_value() const {
                 double host_value;
