@@ -1,12 +1,11 @@
 import os
 import ctypes
-import platform
 from typing import Union
 from ctypes import POINTER,Structure,c_int,c_double
 
-if platform.system() == "Windows": raise SystemError("this library isn't compatible for Windows users")
-elif platform.system() == "Linux": ext = "so"
-else: raise SystemError(f"this library isn't compatible for {platform.system()}!")
+if os.name == "nt": raise OSError("this library isn't compatible for Windows OS")
+elif os.name == "posix": ext = "so"
+else: raise OSError("Unsupported OS")
 
 lib_path = os.path.join(os.path.dirname(__file__),f"libvar.{ext}")
 if not os.path.exists(lib_path): raise FileNotFoundError(f"Could not find the library file: {lib_path}")
@@ -81,6 +80,8 @@ lib.Var_neg.argtypes = [POINTER(Var)]
 lib.Var_neg.restype = POINTER(Var)
 
 def variable(x: Union[int,float,bool]): return Variable(x)
+
+
 
 
 class Variable:
